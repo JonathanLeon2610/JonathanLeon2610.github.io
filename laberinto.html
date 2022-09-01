@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas</title>
+    <style type="text/css"> 
+        canvas{
+            background-color: rgb(9, 190, 54);
+        }
+    </style>
+</head>
+<body onload="carga()" style="background-color:#04adfc">
+    <h1 font="Agency FB">
+        Tiempo Transcurrido
+        <br>
+        <span id="minutos"></span>:<span id="segundos"></span>
+    </h1>
+    
+    <canvas id="mycanvas" width="1500" height="1000">El navegador no soporta Canvas<canvas>
+        <script type="text/javascript">
+            var canvas= null;
+            var ctx=null;
+            var fig ="arc";
+            var press = "false";
+            var super_X=0;
+            var super_Y=0;
+            var player1=null;
+            var player2=null;
+            var player3=null;
+            var player4=null;
+            var player5=null;
+            var player6=null;
+            var paredes=[];
+            var direccion="-";
+            var score=9;
+            var speed=3;
+            var pause=false;
+            var yoshi_frente= new Image();
+            var yoshi_atras= new Image();
+            var yoshi_derecha= new Image();
+            var yoshi_izquierda= new Image();
+            var huevo= new Image();
+            var wall= new Image();
+            var fondo=new Image();
+            var meta=new Image();
+            var audio=new Audio();
+            var back_music=new Audio();
+            var ganar= new Audio();
+            var tiempo="00:00";
+            var cronometro;
+
+            function carga(){
+            contador_s=0;
+                    contador_m=0;
+                    s=document.getElementById("segundos");
+                    m=document.getElementById("minutos");
+
+                    window.setInterval(
+                        function(){
+                            if (contador_s==60){
+                                contador_s=0;
+                                m.innerHTML = contador_m;
+                                contador_m++;
+                                if (contador_m==0){
+                                    contador_m=0;
+                                }
+                            }
+                            s.innerHTML = contador_s;
+                            m.innerHTML = contador_m;
+                            contador_s++;
+                        }
+                        ,1000);
+                }
+
+
+
+            document.addEventListener("keydown",function(e){
+                console.log(e);
+                if(e.keyCode==87 || e.keyCode==38){
+                    direccion="arriba";
+                }
+                if(e.keyCode==83 || e.keyCode==40){
+                    direccion="abajo";
+
+                }
+                if(e.keyCode==65 || e.keyCode==37){
+                    direccion="izquierda";
+
+                }
+                if(e.keyCode==68 || e.keyCode==39){
+                    direccion="derecha";
+                }
+                
+            })
+
+            function run(){
+                canvas= document.getElementById("mycanvas");
+                ctx=canvas.getContext('2d');
+                window.alert("Recolecta los 10 Huevesillos para desbloquear la Salida Secreta");
+                window.alert("Presione W-A-S-D para Moverte");
+                player1=new Cuadro(100,25,20,36,"red");
+                huevo1=new Cuadro(50,40,40,40,"yellow");
+                huevo2=new Cuadro(500,25,40,40,"red");
+                huevo3=new Cuadro(50,600,40,40,"red");
+                huevo4=new Cuadro(610,240,40,40,"red");
+                huevo5=new Cuadro(50,670,40,40,"red");
+                huevo6=new Cuadro(1270,800,40,40,"red");
+                huevo7=new Cuadro(30,950,40,40,"red");
+                huevo8=new Cuadro(410,900,40,40,"red");
+                huevo9=new Cuadro(630,600,40,40,"red");
+                huevo10=new Cuadro(1070,480,40,40,"red");
+                salida=new Cuadro(1250,825,100,220,"red");
+                salida2=new Cuadro(1315,725,100,220,"red");
+                var grosor=20;
+                paredes[0]=new Cuadro(0,0,75,grosor,"black");
+                paredes[1]=new Cuadro(75,0,grosor,80,"black");
+                paredes[2]=new Cuadro(145,0,1175,grosor,"black");
+                paredes[3]=new Cuadro(145,0,grosor,80,"black");
+                paredes[4]=new Cuadro(145,65,250,grosor,"black");
+                paredes[5]=new Cuadro(75,130,320,grosor,"black");
+                paredes[6]=new Cuadro(75,130,320,grosor,"black");
+                paredes[7]=new Cuadro(450,0,grosor,200,"black");
+                paredes[8]=new Cuadro(0,0,grosor,720,"");
+                //Borde izquierdo
+                paredes[9]=new Cuadro(0,0,grosor,980,"black");
+                paredes[10]=new Cuadro(145,195,325,grosor,"black");
+                paredes[11]=new Cuadro(75,150,grosor,280,"black");
+                paredes[12]=new Cuadro(75,260,575,grosor,"black");
+                paredes[13]=new Cuadro(590,190,50,grosor,"black");
+                paredes[14]=new Cuadro(520,130,grosor,130," black");
+                paredes[15]=new Cuadro(630,190,grosor,90,"black");
+                paredes[16]=new Cuadro(520,128,130,grosor,"black");
+                paredes[17]=new Cuadro(145,335,825,grosor,"black");
+                paredes[18]=new Cuadro(75,410,515,grosor,"black");
+                paredes[19]=new Cuadro(650,335,grosor,170,"black");
+                paredes[20]=new Cuadro(145,410,grosor,95,"black");
+                paredes[21]=new Cuadro(0,485,95,grosor,"black");
+                paredes[22]=new Cuadro(375,410,grosor,95,"black");
+                paredes[23]=new Cuadro(75 ,495,grosor,70,"black");
+                paredes[24]=new Cuadro(75,565,325,grosor,"black");
+                paredes[25]=new Cuadro(240,480,grosor,90,"black");
+                paredes[26]=new Cuadro(375,505,80,grosor,"black");
+                paredes[27]=new Cuadro(450,505,grosor,150,"black");
+                paredes[28]=new Cuadro(470,65,110,grosor,"black");
+                paredes[29]=new Cuadro(470,0,560,grosor,"black");
+                paredes[30]=new Cuadro(700,130,grosor,205,"");
+                paredes[31]=new Cuadro(700,130,100,grosor,"black");
+                paredes[32]=new Cuadro(700,200,270,grosor,"black");
+                paredes[33]=new Cuadro(950,140,grosor,80,"black");
+                paredes[34]=new Cuadro(800,65,grosor,85,"black");
+                paredes[35]=new Cuadro(870,0,grosor,150,"black");
+                paredes[36]=new Cuadro(890,65,80,grosor,"black");
+                //Borde derecho
+                paredes[37]=new Cuadro(1300,0,grosor,795,"black");
+                //Borde inferior
+                paredes[38]=new Cuadro(0,980,1250,grosor,"black");
+                paredes[39]=new Cuadro(0,635,690,grosor,"black");
+                paredes[40]=new Cuadro(520,505,150,grosor,"black");
+                paredes[41]=new Cuadro(520,505,grosor,80,"black");
+                paredes[42]=new Cuadro(780,265,grosor,70,"black");
+                paredes[43]=new Cuadro(780,265,80,grosor,"black");
+                paredes[44]=new Cuadro(520,570,150,grosor,"black");
+                paredes[45]=new Cuadro(670,570,grosor,65,"black");
+                paredes[46]=new Cuadro(740,570,grosor,135,"black");
+                paredes[47]=new Cuadro(740,570,135,grosor,"black");
+                paredes[48]=new Cuadro(875,410,grosor,250,"black");
+                paredes[49]=new Cuadro(740,500,135,grosor,"black");
+                paredes[50]=new Cuadro(950,570,grosor,135,"black");
+                paredes[51]=new Cuadro(740,335,grosor,110,"black");
+                paredes[52]=new Cuadro(740,425,90,grosor,"black");
+                //Salida #1
+                paredes[53]=new Cuadro(1235,875,grosor,125,"red");
+                paredes[54]=new Cuadro(700,0,grosor,75)
+                paredes[55]=new Cuadro(0,705,75,grosor);
+                paredes[56]=new Cuadro(150,635,grosor,100);
+                paredes[57]=new Cuadro(230,720,grosor,100);
+                paredes[58]=new Cuadro(230,720,460,grosor);
+                paredes[59]=new Cuadro(740,690,100,grosor);
+                paredes[60]=new Cuadro(820,690,grosor,130);
+                paredes[61]=new Cuadro(820,690,grosor,130);
+                paredes[62]=new Cuadro(875,450,100,grosor);
+                paredes[63]=new Cuadro(0,800,250,grosor);
+                paredes[64]=new Cuadro(375,720,grosor,105);
+                paredes[65]=new Cuadro(325,805,70,grosor);
+                paredes[66]=new Cuadro(300,805,70,grosor);
+                paredes[67]=new Cuadro(950,705,85,grosor);
+                paredes[68]=new Cuadro(950,705,85,grosor);
+                paredes[69]=new Cuadro(0,875,85,grosor);
+                paredes[70]=new Cuadro(145,875,grosor,125);
+                paredes[71]=new Cuadro(375,875,grosor,125);
+                paredes[72]=new Cuadro(145,875,105,grosor);
+                paredes[73]=new Cuadro(230,875,grosor,60);
+                paredes[74]=new Cuadro(375,875,515,grosor);
+                paredes[75]=new Cuadro(450,790,grosor,105);
+                paredes[76]=new Cuadro(740,800,295,grosor);
+                paredes[77]=new Cuadro(740,800,295,grosor);
+                paredes[78]=new Cuadro(740,875,grosor,60);
+                paredes[79]=new Cuadro(660,875,grosor,60);
+                paredes[80]=new Cuadro(590,940,grosor,60);
+                paredes[81]=new Cuadro(510,940,grosor,60);
+                paredes[82]=new Cuadro(450,875,grosor,60);
+                paredes[83]=new Cuadro(670,720,grosor,100);
+                paredes[84]=new Cuadro(550,800,140,grosor);
+                paredes[85]=new Cuadro(300,940,grosor,60);
+                paredes[86]=new Cuadro(300,805,grosor,60);
+                paredes[87]=new Cuadro(935,270,100,grosor);
+                paredes[88]=new Cuadro(935,875,100,grosor);
+                paredes[89]=new Cuadro(1235,65,grosor,830);
+                paredes[90]=new Cuadro(935,875,grosor,125);
+                paredes[91]=new Cuadro(1235,875,85,grosor);
+                paredes[92]=new Cuadro(1150,65,105,grosor);
+                paredes[93]=new Cuadro(1150,130,105,grosor);
+                //
+                paredes[94]=new Cuadro(1150,270,105,grosor);
+                paredes[95]=new Cuadro(1150,150,grosor,75);
+                paredes[96]=new Cuadro(1150,270,grosor,200);
+                paredes[97]=new Cuadro(1050,450,120,grosor);
+                paredes[98]=new Cuadro(1050,450,grosor,210);
+                paredes[99]=new Cuadro(950,550,220,grosor);
+                paredes[100]=new Cuadro(1150,550,grosor,340);
+                paredes[101]=new Cuadro(1070,875,100,grosor);
+                paredes[102]=new Cuadro(1015,270,grosor,90);
+                paredes[103]=new Cuadro(1015,0,grosor,270);
+                paredes[104]=new Cuadro(1080,0,grosor,225);
+                paredes[105]=new Cuadro(1070,875,grosor,60);
+                paredes[106]=new Cuadro(1015,875,grosor,60);
+                paredes[107]=new Cuadro(950,335,grosor,135);
+                paredes[108]=new Cuadro(75,0,100,grosor);
+
+
+
+                huevo.src="huevo.png";
+                yoshi_frente.src="yoshi_frente.png";
+                yoshi_atras.src="yoshi_atras.png";
+                yoshi_derecha.src="yoshi_derecha.png";
+                yoshi_izquierda.src="yoshi_izquierda.png";
+                wall.src="wall.png"
+                meta.src="meta.png";
+                fondo.src="fondo.png";
+                audio.src="tomar.mp3";
+                back_music.src="cancion-fondo.mp3";
+                ganar.src="ganar.mp3";
+                paint();
+            }
+
+
+
+            function paint(){
+                window.requestAnimationFrame(paint);
+                ctx.fillStyle="#B1D7B4";
+                back_music.play();
+                ctx.drawImage(fondo,0,0,1500,1000);
+                ctx.drawImage(huevo,huevo1.x,huevo1.y);
+                ctx.drawImage(huevo,huevo2.x,huevo2.y);
+                ctx.drawImage(huevo,huevo3.x,huevo3.y);
+                ctx.drawImage(huevo,huevo4.x,huevo4.y);
+                ctx.drawImage(huevo,huevo5.x,huevo5.y);
+                ctx.drawImage(huevo,huevo6.x,huevo6.y);
+                ctx.drawImage(huevo,huevo7.x,huevo7.y);
+                ctx.drawImage(huevo,huevo8.x,huevo8.y);
+                ctx.drawImage(huevo,huevo9.x,huevo9.y);
+                ctx.drawImage(huevo,huevo10.x,huevo10.y);
+                ctx.fillStyle="black";
+                ctx.font="40px Agency FB";
+                ctx.fillText("score "+score+"/10",1340,50);
+                for(i=0;i<paredes.length;i++){
+                    ctx.drawImage(wall,paredes[i].x,paredes[i].y,(paredes[i].w),(paredes[i].h));
+                }
+                ctx.drawImage(meta,salida.x,salida.y,(salida.w),(salida.h));
+                ctx.drawImage(meta,salida2.x,salida2.y,(salida2.w),(salida2.h));
+                if(pause==true){
+                    window.alert("Has llegado a la Salida");
+                }
+                else{
+                    update();
+                }
+                
+            }
+
+
+            function update(){
+                if(direccion=="arriba"){
+                    ctx.drawImage(yoshi_atras,player1.x,player1.y);
+                    player1.y-=speed;
+                }
+                if(direccion=="abajo"){
+                    ctx.drawImage(yoshi_frente,player1.x,player1.y);
+                    player1.y+=speed;
+                }
+                if(direccion=="izquierda"){
+                    ctx.drawImage(yoshi_izquierda,player1.x,player1.y);
+                    player1.x-=speed;
+                }
+                if(direccion=="derecha"){
+                    ctx.drawImage(yoshi_derecha,player1.x,player1.y);
+                    player1.x+=speed;
+                }
+                if(direccion=="-"){
+                    ctx.drawImage(yoshi_frente,player1.x,player1.y);
+                }
+
+                
+                //Tocar la meta
+                if(player1.se_tocan(salida) || player1.se_tocan(salida2)){
+                    ganar.play();
+                    window.alert("Has llegado a la Salida!");
+                }
+
+                //Elminar pared de la salida
+                if(score==10){
+                    paredes[53].x=5000;
+                    paredes[53].y=5000;
+                    
+                }
+                
+                //Recolectar Huevos
+                if(player1.se_tocan(huevo1)){
+                    huevo1.x=1400 ;
+                    huevo1.y=60;
+                    audio.play(); 
+                    score+=1;
+                }
+                if(player1.se_tocan(huevo2)){
+                    huevo2.x=1400;
+                    huevo2.y=110;
+                    audio.play(); 
+                    score+=1;
+                }
+                if(player1.se_tocan(huevo3)){
+                    huevo3.x=1400;
+                    huevo3.y=160;
+                    audio.play(); 
+                    score+=1;
+                }
+                if(player1.se_tocan(huevo4)){
+                    huevo4.x=1400;
+                    huevo4.y=210;
+                    audio.play(); 
+                    score+=1;
+                }
+                if(player1.se_tocan(huevo5)){
+                    huevo5.x=1400;
+                    huevo5.y=260;
+                    audio.play(); 
+                    score+=1;
+                }
+
+                if(player1.se_tocan(huevo6)){
+                    huevo6.x=1400;
+                    huevo6.y=310;
+                    audio.play(); 
+                    score+=1;
+                }
+
+                if(player1.se_tocan(huevo7)){
+                    huevo7.x=1400;
+                    huevo7.y=360;
+                    audio.play(); 
+                    score+=1;
+                }
+
+                if(player1.se_tocan(huevo8)){
+                    huevo8.x=1400;
+                    huevo8.y=410;
+                    audio.play(); 
+                    score+=1;
+                }
+
+                if(player1.se_tocan(huevo9)){
+                    huevo9.x=1400;
+                    huevo9.y=460;
+                    audio.play(); 
+                    score+=1;
+                }
+
+                if(player1.se_tocan(huevo10)){
+                    huevo10.x=1400;
+                    huevo10.y=510;
+                    audio.play(); 
+                    score+=1;
+                }
+                //Colision de Paredes
+                for(i=0;i<=paredes.length;i++){
+                    if(player1.se_tocan(paredes[i])){
+                        if(direccion=="arriba"){
+                        player1.y+=speed;
+                        }
+                        if(direccion=="abajo"){
+                            player1.y-=speed;
+                        }
+                        if(direccion=="izquierda"){
+                            player1.x+=speed;
+
+                        }
+                        if(direccion=="derecha"){
+                            player1.x-=speed;
+                        }
+                    }
+                }
+
+                
+                
+                
+            }
+
+            window.requestAnimationFrame = (function () {
+                return window.requestAnimationFrame ||
+                    window.webkitRequestAnimationFrame ||
+                    window.mozRequestAnimationFrame ||
+                    function (callback) {
+                        window.setTimeout(callback, 17);
+                    };
+            }());
+
+
+            function Cuadro(x,y,w,h,c){
+                this.x=x;
+                this.y=y;
+                this.w=w;
+                this.h=h;
+                this.c=c;
+
+
+                this.se_tocan = function (target) { 
+                if(this.x < target.x + target.w &&
+                this.x + this.w > target.x && 
+                this.y < target.y + target.h && 
+                this.y + this.h > target.y){
+                    return true;	
+                }
+                };
+
+                this.pintar=function(ctx){
+                    ctx.fillStyle=this.c;
+                    ctx.fillRect(this.x,this.y,this.w,this.h);
+                    ctx.strokeRect(this.x,this.y,this.w,this.h);
+                }
+            }
+
+
+            window.addEventListener("load",run,false);
+            </script>
+</body>
+</html>
